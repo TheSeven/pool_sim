@@ -34,5 +34,13 @@ If you have other variables you want to plot other than the defaults (Round, Rew
 you can declare them with
 
     class CustomPool < PoolSim
-        plot :myvar1, :myvar2
+      plot :myvar1, :myvar2
     end
+
+TODO
+----
+
+- Monte-carlo simulation
+- Graphs
+- Attack models
+- Hashrate profiles
