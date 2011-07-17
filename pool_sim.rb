@@ -12,6 +12,7 @@ class PoolSim
     @difficulty = 1_500_000
     @miner_percent = 2
     @average_fees = 0
+    @withholding_percent = 0
     self.opts = opts
   end
   
@@ -20,6 +21,7 @@ class PoolSim
     @difficulty = opts[:difficulty] if opts[:difficulty]
     @miner_percent = opts[:miner_percent] if opts[:miner_percent]
     @average_fees = opts[:average_fees] if opts[:average_fees]
+    @withholding_percent = opts[:withholding_percent] if opts[:withholding_percent]
   end
   
   def run opts={}
@@ -52,6 +54,7 @@ class PoolSim
   end
   
   def mean_shares
-    difficulty
+    p = @withholding_percent / 100.0
+    difficulty * (1 + p / (1 - p))
   end
 end
