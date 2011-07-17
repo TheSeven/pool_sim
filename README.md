@@ -9,7 +9,7 @@ Running the simulation
 Changing the parameters
 -----------------------
 
-You can pass the following options to the run() method, or to the initializer of the simulator object:
+You can pass the following options to the `run` or `new` methods:
 
 - `:rounds`: number of rounds to run (default: 100)
 - `:difficulty`: difficulty level, in mean shares per block (default: 1,500,000)
