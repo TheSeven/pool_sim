@@ -7,10 +7,13 @@ class Prop < PoolSim
   
   def initialize opts={}
     super opts
-    @honest_earnings = 0.0
   end
   
   def pay_out
     @honest_earnings += reward * miner_percent / 100.0
+  end
+  
+  def clear
+    @honest_earnings = 0.0
   end
 end

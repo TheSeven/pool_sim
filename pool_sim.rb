@@ -31,6 +31,7 @@ class PoolSim
   
   def run opts={}
     reset_plot
+    clear
     self.opts = opts
     1.upto(rounds) do |round|
       @round = round
@@ -59,7 +60,7 @@ class PoolSim
   end
   
   def mean_shares
-    p = @withholding_percent / 100.0
+    p = withholding_percent / 100.0
     difficulty * (1 + p / (1 - p))
   end
   
@@ -69,5 +70,13 @@ class PoolSim
   
   def miner_percent
     @miner_percent * 1 / (1.0 + hopper_percent * hopper_duration / 100.0)
+  end
+  
+  def results
+    {}.tap do |hash|
+      plot_items.each_with_index do |item, i|
+        hash[item] = @plot[-1][i]
+      end
+    end
   end
 end
