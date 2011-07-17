@@ -15,6 +15,7 @@ You can pass the following options to the run() method, or to the initializer of
 - `:difficulty`: difficulty level, in mean shares per block
 - `:miner_percent`: percentage of total hashrate owned by target miner
 - `:average_fees`: mean amount of fees, in BTC
+- `:withholding_percent`: percentage of pool that will withhold a found block
 
 Available payout models
 -----------------------
