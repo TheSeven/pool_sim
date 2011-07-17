@@ -50,6 +50,9 @@ you can declare them with
 
     class CustomPool < PoolSim
       plot :myvar1, :myvar2
+      def pay_out
+        @miner_earnings += ...
+      end
     end
 
 TODO
