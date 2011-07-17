@@ -55,6 +55,23 @@ you can declare them with
       end
     end
 
+Other useful stuff
+------------------
+
+The `Tabulator` class can print pretty tables for you:
+
+    headers = [:name, :age, :occupation]
+    bob = ['mario', 54, 'Plumber']
+    john = ['John Smith', 216, 'Philatelist']
+    Tabulator.new([bob, john], :headers => headers).render_columns
+
+would render like this:
+
+    Name       | Age | Occupation 
+    -----------+-----+------------
+    mario      | 54  | Plumber    
+    John Smith | 216 | Philatelist
+
 TODO
 ----
 
