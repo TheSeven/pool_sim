@@ -17,7 +17,7 @@ You can pass the following options to the run() method, or to the initializer of
 - `:average_fees`: mean amount of fees, in BTC (default: 0)
 - `:withholding_percent`: percentage of pool that will withhold a found block (default: 0)
 - `:hopper_percent`: percentage of base pool size that joins for the first part of the round (defualt: 0)
-- `:hop_at_at`: percentage of difficulty at which hoppers jump out (default: 43.5)
+- `:hop_out_at`: percentage of difficulty at which hoppers jump out (default: 43.5)
 
 Available payout models
 -----------------------
