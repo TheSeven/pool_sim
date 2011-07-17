@@ -26,6 +26,18 @@ Available payout models
 - `SMPPS`: Luke-Jr's Shared-Maximum Pay-per-Share
 - `XPPS`: Like SMPPS, but without debt memory
 
+Estimating Results
+------------------
+
+If you want to know the average outcome after the simulation ends, simply pass an
+initialized simulation object to Estimator.new, and call run. To see the results,
+then call analyze:
+
+    Estimator.new(Prop.new, :runs => 1000).run.analyze
+
+Any options besides `:runs` passed to `new` or `run` will be passed on to the
+simulation object's `run` method.
+
 Writing your own model
 ----------------------
 
@@ -43,6 +55,6 @@ you can declare them with
 TODO
 ----
 
-- Monte-carlo simulation
+- Parameter sweeping
 - Graphs
 - Hashrate profiles
