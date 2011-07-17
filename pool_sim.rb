@@ -3,7 +3,8 @@ require 'plotter'
 class PoolSim
   include Plotter
   
-  attr_reader :round, :rounds, :difficulty, :shares, :miner_percent, :average_fees, :reward
+  attr_reader :round, :rounds, :difficulty, :shares, :average_fees, :reward,
+              :hop_out_at, :withholding_percent, :hopper_percent
   
   plot :round, :reward, :shares, :difficulty
   
@@ -13,6 +14,8 @@ class PoolSim
     @miner_percent = 2
     @average_fees = 0
     @withholding_percent = 0
+    @hop_out_at = 43.5
+    @hopper_percent = 0
     self.opts = opts
   end
   
@@ -22,6 +25,8 @@ class PoolSim
     @miner_percent = opts[:miner_percent] if opts[:miner_percent]
     @average_fees = opts[:average_fees] if opts[:average_fees]
     @withholding_percent = opts[:withholding_percent] if opts[:withholding_percent]
+    @hop_out_at = opts[:hop_out_at] if opts[:hop_out_at]
+    @hopper_percent = opts[:hopper_percent] if opts[:hopper_percent]
   end
   
   def run opts={}
@@ -56,5 +61,13 @@ class PoolSim
   def mean_shares
     p = @withholding_percent / 100.0
     difficulty * (1 + p / (1 - p))
+  end
+  
+  def hopper_duration
+    [difficulty * hop_out_at / 100.0, shares].min / shares
+  end
+  
+  def miner_percent
+    @miner_percent * 1 / (1.0 + hopper_percent * hopper_duration / 100.0)
   end
 end

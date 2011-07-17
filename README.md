@@ -11,11 +11,13 @@ Changing the parameters
 
 You can pass the following options to the run() method, or to the initializer of the simulator object:
 
-- `:rounds`: number of rounds to run
-- `:difficulty`: difficulty level, in mean shares per block
-- `:miner_percent`: percentage of total hashrate owned by target miner
-- `:average_fees`: mean amount of fees, in BTC
-- `:withholding_percent`: percentage of pool that will withhold a found block
+- `:rounds`: number of rounds to run (default: 100)
+- `:difficulty`: difficulty level, in mean shares per block (default: 1,500,000)
+- `:miner_percent`: percentage of total hashrate owned by target miner (default: 2)
+- `:average_fees`: mean amount of fees, in BTC (default: 0)
+- `:withholding_percent`: percentage of pool that will withhold a found block (default: 0)
+- `:hopper_percent`: percentage of base pool size that joins for the first part of the round (defualt: 0)
+- `:hop_at_at`: percentage of difficulty at which hoppers jump out (default: 43.5)
 
 Available payout models
 -----------------------
@@ -43,5 +45,4 @@ TODO
 
 - Monte-carlo simulation
 - Graphs
-- Attack models
 - Hashrate profiles
