@@ -5,8 +5,6 @@ class SMPPS < PPS
     super opts
   end
   
-  plot :reserves
-  
   def pay_out
     mp = miner_percent
     @buffer += reward
@@ -21,9 +19,5 @@ class SMPPS < PPS
       @total_paid += buffer
       @buffer = 0
     end
-  end
-  
-  def reserves
-    @buffer - self.debt
   end
 end
