@@ -3,14 +3,19 @@ require 'plotter'
 class PoolSim
   include Plotter
   
-  attr_reader :round, :rounds, :difficulty, :shares, :average_fees, :reward, :honest_payout_percentage,
-              :buffer, :honest_shares, :hopper_shares, :ppshopper_shares, :honest_earnings, :hopper_earnings,
-              :ppshopper_earnings, :hopper_payout_percentage, :ppshopper_payout_percentage, :ppshopper_percent,
-              :hop_out_at, :withholding_percent, :hopper_percent, :share_fluctuations_percent, :invalid_percent
+  POOL_OPTS = [
+    :rounds, :difficulty, :miner_percent, :average_fees, :withholding_percent,
+    :hop_out_at, :hopper_percent, :ppshopper_percent, :share_fluctuations_percent, :invalid_percent
+  ]
   
-  plot :honest_earnings, :honest_shares, :hopper_earnings, :ppshopper_earnings, :hopper_shares, :ppshopper_shares,
-       :honest_payout_percentage, :hopper_payout_percentage, :ppshopper_payout_percentage,
-       :round, :reward, :shares, :difficulty, :buffer
+  attr_reader :round, :shares, :reward, :honest_shares, :hopper_shares,
+              :honest_earnings, :hopper_earnings, :ppshopper_earnings, :ppshopper_shares,
+              :honest_payout_percentage, :hopper_payout_percentage, :ppshopper_payout_percentage
+  
+  attr_reader *POOL_OPTS
+
+  plot :honest_earnings, :hopper_earnings, :ppshopper_earnings, :honest_shares, :hopper_shares, :ppshopper_shares,
+       :honest_payout_percentage, :hopper_payout_percentage, :ppshopper_payout_percentage, :reward, :shares
   
   def initialize opts={}
     @rounds = 1000
@@ -27,27 +32,13 @@ class PoolSim
   end
   
   def opts= opts
-    @rounds = opts[:rounds] if opts[:rounds]
-    @difficulty = opts[:difficulty] if opts[:difficulty]
-    @miner_percent = opts[:miner_percent] if opts[:miner_percent]
-    @average_fees = opts[:average_fees] if opts[:average_fees]
-    @withholding_percent = opts[:withholding_percent] if opts[:withholding_percent]
-    @hop_out_at = opts[:hop_out_at] if opts[:hop_out_at]
-    @hopper_percent = opts[:hopper_percent] if opts[:hopper_percent]
-    @ppshopper_percent = opts[:hopper_percent] if opts[:ppshopper_percent]
-    @share_fluctuations_percent = opts[:share_fluctuations_percent] if opts[:share_fluctuations_percent]
-    @invalid_percent = opts[:invalid_percent] if opts[:invalid_percent]
+    POOL_OPTS.each do |opt|
+      instance_variable_set "@#{opt}", opts[opt] if opts[opt]
+    end
   end
   
   def run opts={}
     reset_plot
-    @honest_earnings = 0.0
-    @hopper_earnings = 0.0
-    @ppshopper_earnings = 0.0
-    @honest_shares = 0.0
-    @hopper_shares = 0.0
-    @ppshopper_shares = 0.0
-    @buffer = 0
     clear
     self.opts = opts
     1.upto(rounds) do |round|
@@ -62,13 +53,25 @@ class PoolSim
     50.0 / difficulty
   end
   
+  def invalid?
+    @invalid
+  end
+  
   def do_round
     @shares = random_shares
     @reward = random_reward
-    if rand < invalid_percent / 100.0
-      @reward = 0
-    end
+    @invalid = (rand < invalid_percent / 100.0)
+    @reward = 0 if invalid?
     pay_out
+  end
+  
+  def clear
+    @honest_earnings = 0.0
+    @hopper_earnings = 0.0
+    @ppshopper_earnings = 0.0
+    @honest_shares = 0.0
+    @hopper_shares = 0.0
+    @ppshopper_shares = 0.0
   end
   
   def pay_out
@@ -77,6 +80,10 @@ class PoolSim
   
   def random_reward
     50 - Math.log(rand) * average_fees
+  end
+  
+  def ideal_earnings
+    50 * round * @miner_percent / 100.0
   end
   
   def random_shares
@@ -94,9 +101,9 @@ class PoolSim
   
   def base_hashrate
     if buffer > 0
-      1.0 + hopper_duration * @hopper_percent / 100.0
+      1.0 - (1 - hopper_duration) * @hopper_percent / 100.0
     else
-      1.0 + hopper_duration * @hopper_percent / 100.0 - @ppshopper_percent / 100.0
+      1.0 - (1 - hopper_duration) * @hopper_percent / 100.0 - @ppshopper_percent / 100.0
     end
   end
   
@@ -105,7 +112,7 @@ class PoolSim
   end
   
   def hopper_percent
-    @miner_percent * hopper_duration / base_hashrate
+    @miner_percent * hopper_duration / (1.0 + @miner_percent / 100.0) * (1.0 + 0.02 * share_fluctuations_percent * rand)
   end
   
   def ppshopper_percent

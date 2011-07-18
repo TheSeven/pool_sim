@@ -11,15 +11,15 @@ class Prop < PoolSim
   end
   
   def pay_out
-    mp = miner_percent
-    hp = hopper_percent
-    pp = ppshopper_percent
-    @honest_earnings += reward * mp / 100.0
-    @hopper_earnings += reward * hp / 100.0
-    @ppshopper_earnings += reward * pp / 100.0
-    @honest_shares += shares * mp / 100.0
-    @hopper_shares += shares * hp / 100.0
-    @ppshopper_shares += shares * pp / 100.0
+    mp = miner_percent / 100.0
+    hp = hopper_percent / 100.0
+    pp = ppshopper_percent / 100.0
+    @honest_earnings += reward * mp
+    @hopper_earnings += reward * hp
+    @ppshopper_earnings += reward * pp
+    @honest_shares += shares * mp
+    @hopper_shares += shares * hp
+    @ppshopper_shares += shares * pp
     @honest_payout_percentage = 100.0 * @honest_earnings / @honest_shares / pps_price
     @hopper_payout_percentage = 100.0 * @hopper_earnings / @hopper_shares / pps_price
     @ppshopper_payout_percentage = 100.0 * @ppshopper_earnings / @ppshopper_shares / pps_price

@@ -1,26 +1,25 @@
 require 'pps'
 
 class ESMPPS < PPS
-  alias_method :clear_parent, :clear
-
+  attr_reader :queue
   attr_reader :queue, :lowest_percentage
 
-  plot :reserves, :lowest_percentage
+  plot :lowest_percentage
 
   def initialize opts={}
     super opts
   end
   
   def pay_out
-    mp = miner_percent
-    hp = hopper_percent
-    pp = ppshopper_percent
+    mp = miner_percent / 100.0
+    hp = hopper_percent / 100.0
+    pp = ppshopper_percent / 100.0
     @buffer += reward
-    @honest_shares += shares * mp / 100.0
-    @hopper_shares += shares * hp / 100.0
-    @ppshopper_shares += shares * pp / 100.0
+    @honest_shares += shares * mp
+    @hopper_shares += shares * hp
+    @ppshopper_shares += shares * pp
     @total_reward += shares * pps_price
-    @queue[0] = [queue[0][0] + shares * pps_price, queue[0][1] + shares * pps_price * mp / 100.0, queue[0][2] + shares * pps_price * hp / 100.0, queue[0][3] + shares * pps_price * pp / 100.0]
+    @queue[0] = [queue[0][0] + shares * pps_price, queue[0][1] + shares * pps_price * mp, queue[0][2] + shares * pps_price * hp, queue[0][3] + shares * pps_price * pp]
     while buffer > 0
       least = 1
       secondleast = 1
@@ -63,7 +62,7 @@ class ESMPPS < PPS
   end
   
   def clear
-    clear_parent
+    super
     @queue = Hash.new([0, 0, 0, 0])
     @lowest_percentage = 100.0
   end

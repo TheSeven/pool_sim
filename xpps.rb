@@ -14,6 +14,7 @@ class XPPS < PPS
   
   def pay_out
     mp = miner_percent
+
     hp = hopper_percent
     pp = ppshopper_percent
     @buffer += reward

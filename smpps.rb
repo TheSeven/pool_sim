@@ -1,27 +1,25 @@
 require 'pps'
 
 class SMPPS < PPS
-  alias_method :clear_parent, :clear
-
   attr_reader :honest_debt, :hopper_debt, :ppshopper_debt, :lowest_percentage
 
-  plot :reserves, :lowest_percentage
+  plot :lowest_percentage
   
   def initialize opts={}
     super opts
   end
   
   def pay_out
-    mp = miner_percent
-    hp = hopper_percent
-    pp = ppshopper_percent
+    mp = miner_percent / 100.0
+    hp = hopper_percent / 100.0
+    pp = ppshopper_percent / 100.0
     @buffer += reward
-    @honest_shares += shares * mp / 100.0
-    @hopper_shares += shares * hp / 100.0
-    @ppshopper_shares += shares * pp / 100.0
-    @honest_debt += shares * pps_price * mp / 100.0
-    @hopper_debt += shares * pps_price * hp / 100.0
-    @ppshopper_debt += shares * pps_price * pp / 100.0
+    @honest_shares += shares * mp
+    @hopper_shares += shares * hp
+    @ppshopper_shares += shares * pp
+    @honest_debt += shares * pps_price * mp
+    @hopper_debt += shares * pps_price * hp
+    @ppshopper_debt += shares * pps_price * pp
     @total_reward += shares * pps_price
     ideal = total_reward - total_paid
     if ideal < buffer
@@ -60,16 +58,11 @@ class SMPPS < PPS
     end
   end
   
-  def reserves
-    @buffer - self.debt
-  end
-  
   def clear
-    clear_parent
+    super
     @honest_debt = 0
     @hopper_debt = 0
     @ppshopper_debt = 0
     @lowest_percentage = 100.0
   end
-    
 end

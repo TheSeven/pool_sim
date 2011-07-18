@@ -3,6 +3,7 @@ require 'prop'
 require 'esmpps'
 require 'smpps'
 require 'xpps'
+require 'pplns'
 require 'estimator'
 require 'pps_attack'
 
@@ -17,6 +18,9 @@ smpps = SMPPS.new attack_opts
 xpps = XPPS.new attack_opts
 #xpps.extend PPSAttack
 
+pplns = PPLNS.new attack_opts
+#pplns.extend PPSAttack
+
 prop = Prop.new attack_opts
 #prop.extend PPSAttack
 
@@ -28,6 +32,9 @@ Estimator.new(smpps, :runs => 100).run.analyze
 
 puts "\n=== xPPS ===\n\n"
 Estimator.new(xpps, :runs => 100).run.analyze
+
+puts "\n=== PPLNS ===\n\n"
+Estimator.new(pplns, :runs => 100).run.analyze
 
 puts "\n=== Prop ===\n\n"
 Estimator.new(prop, :runs => 100).run.analyze
