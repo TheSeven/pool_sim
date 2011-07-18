@@ -4,21 +4,24 @@ class PoolSim
   include Plotter
   
   attr_reader :round, :rounds, :difficulty, :shares, :average_fees, :reward, :honest_payout_percentage,
-              :honest_shares, :hopper_shares, :honest_earnings, :hopper_earnings, :hopper_payout_percentage,
+              :buffer, :honest_shares, :hopper_shares, :ppshopper_shares, :honest_earnings, :hopper_earnings,
+              :ppshopper_earnings, :hopper_payout_percentage, :ppshopper_payout_percentage, :ppshopper_percent,
               :hop_out_at, :withholding_percent, :hopper_percent, :share_fluctuations_percent, :invalid_percent
   
-  plot :honest_earnings, :honest_shares, :hopper_earnings, :hopper_shares, :honest_payout_percentage,
-       :hopper_payout_percentage, :round, :reward, :shares, :difficulty
+  plot :honest_earnings, :honest_shares, :hopper_earnings, :ppshopper_earnings, :hopper_shares, :ppshopper_shares,
+       :honest_payout_percentage, :hopper_payout_percentage, :ppshopper_payout_percentage,
+       :round, :reward, :shares, :difficulty, :buffer
   
   def initialize opts={}
-    @rounds = 10000
+    @rounds = 1000
     @difficulty = 1_500_000
     @miner_percent = 2
     @average_fees = 0
     @withholding_percent = 0
     @hop_out_at = 43.5
     @hopper_percent = 0
-    @share_fluctuations_percent = 50
+    @ppshopper_percent = 0
+    @share_fluctuations_percent = 100
     @invalid_percent = 1
     self.opts = opts
   end
@@ -31,6 +34,7 @@ class PoolSim
     @withholding_percent = opts[:withholding_percent] if opts[:withholding_percent]
     @hop_out_at = opts[:hop_out_at] if opts[:hop_out_at]
     @hopper_percent = opts[:hopper_percent] if opts[:hopper_percent]
+    @ppshopper_percent = opts[:hopper_percent] if opts[:ppshopper_percent]
     @share_fluctuations_percent = opts[:share_fluctuations_percent] if opts[:share_fluctuations_percent]
     @invalid_percent = opts[:invalid_percent] if opts[:invalid_percent]
   end
@@ -39,8 +43,11 @@ class PoolSim
     reset_plot
     @honest_earnings = 0.0
     @hopper_earnings = 0.0
+    @ppshopper_earnings = 0.0
     @honest_shares = 0.0
     @hopper_shares = 0.0
+    @ppshopper_shares = 0.0
+    @buffer = 0
     clear
     self.opts = opts
     1.upto(rounds) do |round|
@@ -85,12 +92,28 @@ class PoolSim
     [difficulty * hop_out_at / 100.0, shares].min / shares
   end
   
+  def base_hashrate
+    if buffer > 0
+      1.0 + hopper_duration * @hopper_percent / 100.0
+    else
+      1.0 + hopper_duration * @hopper_percent / 100.0 - @ppshopper_percent / 100.0
+    end
+  end
+  
   def miner_percent
-    @miner_percent / (1.0 + hopper_duration * @hopper_percent / 100.0) * (1.0 + 0.02 * share_fluctuations_percent * rand)
+    @miner_percent / base_hashrate * (1.0 + 0.02 * share_fluctuations_percent * rand)
   end
   
   def hopper_percent
-    @miner_percent * hopper_duration / (1.0 + hopper_duration * @hopper_percent / 100.0) * (1.0 + 0.02 * share_fluctuations_percent * rand)
+    @miner_percent * hopper_duration / base_hashrate
+  end
+  
+  def ppshopper_percent
+    if buffer > 0
+      @miner_percent / base_hashrate
+    else
+      0
+    end
   end
   
   def results
