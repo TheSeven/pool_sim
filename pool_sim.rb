@@ -3,19 +3,23 @@ require 'plotter'
 class PoolSim
   include Plotter
   
-  attr_reader :round, :rounds, :difficulty, :shares, :average_fees, :reward,
-              :hop_out_at, :withholding_percent, :hopper_percent
+  attr_reader :round, :rounds, :difficulty, :shares, :average_fees, :reward, :honest_payout_percentage,
+              :honest_shares, :hopper_shares, :honest_earnings, :hopper_earnings, :hopper_payout_percentage,
+              :hop_out_at, :withholding_percent, :hopper_percent, :share_fluctuations_percent, :invalid_percent
   
-  plot :round, :reward, :shares, :difficulty
+  plot :honest_earnings, :honest_shares, :hopper_earnings, :hopper_shares, :honest_payout_percentage,
+       :hopper_payout_percentage, :round, :reward, :shares, :difficulty
   
   def initialize opts={}
-    @rounds = 100
+    @rounds = 10000
     @difficulty = 1_500_000
     @miner_percent = 2
     @average_fees = 0
     @withholding_percent = 0
     @hop_out_at = 43.5
     @hopper_percent = 0
+    @share_fluctuations_percent = 50
+    @invalid_percent = 1
     self.opts = opts
   end
   
@@ -27,10 +31,16 @@ class PoolSim
     @withholding_percent = opts[:withholding_percent] if opts[:withholding_percent]
     @hop_out_at = opts[:hop_out_at] if opts[:hop_out_at]
     @hopper_percent = opts[:hopper_percent] if opts[:hopper_percent]
+    @share_fluctuations_percent = opts[:share_fluctuations_percent] if opts[:share_fluctuations_percent]
+    @invalid_percent = opts[:invalid_percent] if opts[:invalid_percent]
   end
   
   def run opts={}
     reset_plot
+    @honest_earnings = 0.0
+    @hopper_earnings = 0.0
+    @honest_shares = 0.0
+    @hopper_shares = 0.0
     clear
     self.opts = opts
     1.upto(rounds) do |round|
@@ -41,9 +51,16 @@ class PoolSim
     self
   end
   
+  def pps_price
+    50.0 / difficulty
+  end
+  
   def do_round
     @shares = random_shares
     @reward = random_reward
+    if rand < invalid_percent / 100.0
+      @reward = 0
+    end
     pay_out
   end
   
@@ -56,12 +73,12 @@ class PoolSim
   end
   
   def random_shares
-    (-Math.log(rand) * mean_shares).to_i
+    [(-Math.log(rand) * mean_shares).to_i, 1].max
   end
   
   def mean_shares
     p = withholding_percent / 100.0
-    difficulty * (1 + p / (1 - p))
+    difficulty / (1 - p)
   end
   
   def hopper_duration
@@ -69,7 +86,11 @@ class PoolSim
   end
   
   def miner_percent
-    @miner_percent * 1 / (1.0 + hopper_percent * hopper_duration / 100.0)
+    @miner_percent / (1.0 + hopper_duration * @hopper_percent / 100.0) * (1.0 + 0.02 * share_fluctuations_percent * rand)
+  end
+  
+  def hopper_percent
+    @miner_percent * hopper_duration / (1.0 + hopper_duration * @hopper_percent / 100.0) * (1.0 + 0.02 * share_fluctuations_percent * rand)
   end
   
   def results
