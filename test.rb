@@ -8,8 +8,8 @@ require 'pps_attack'
 #puts "\n=== Proportional ===\n\n"
 #Prop.new.run.show_table
 #
-#puts "\n=== SMPPS ===\n\n"
-#SMPPS.new.run.show_table
+puts "\n=== SMPPS ===\n\n"
+SMPPS.new.run.show_table
 #
 #puts "\n=== xPPS ===\n\n"
 #XPPS.new.run.show_table
@@ -35,19 +35,19 @@ require 'pps_attack'
 
 
 
-attack_opts = {:hopper_percent => 50, :withholding_percent => 50}
-
-smpps = SMPPS.new attack_opts
-smpps.extend PPSAttack
-
-xpps = XPPS.new attack_opts
-xpps.extend PPSAttack
-
-puts "\n=== SMPPS ===\n\n"
-Estimator.new(smpps, :runs => 1000).run.analyze
-
-puts "\n=== xPPS ===\n\n"
-Estimator.new(xpps, :runs => 1000).run.analyze
+#attack_opts = {:hopper_percent => 50, :withholding_percent => 50}
+#
+#smpps = SMPPS.new attack_opts
+#smpps.extend PPSAttack
+#
+#xpps = XPPS.new attack_opts
+#xpps.extend PPSAttack
+#
+#puts "\n=== SMPPS ===\n\n"
+#Estimator.new(smpps, :runs => 1000).run.analyze
+#
+#puts "\n=== xPPS ===\n\n"
+#Estimator.new(xpps, :runs => 1000).run.analyze
 
 
 

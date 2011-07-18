@@ -6,6 +6,7 @@ class XPPS < PPS
   end
   
   def pay_out
+    mp = miner_percent
     @buffer += reward
     @total_reward = shares * pps_price
     @total_paid = 0
@@ -13,9 +14,9 @@ class XPPS < PPS
     if ideal < buffer
       @buffer -= ideal
       @total_paid += ideal
-      @honest_earnings += shares * miner_percent * pps_price / 100.0
+      @honest_earnings += ideal * mp / 100.0
     else
-      @honest_earnings += miner_percent * buffer / 100.0
+      @honest_earnings += buffer * mp / 100.0
       @total_paid += buffer
       @buffer = 0
     end
