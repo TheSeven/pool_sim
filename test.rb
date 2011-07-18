@@ -35,7 +35,7 @@ require 'pps_attack'
 
 
 
-attack_opts = {:hopper_percent => 50, :withholding_percent => 10}
+attack_opts = {:hopper_percent => 100, :withholding_percent => 10}
 
 smpps = SMPPS.new attack_opts
 smpps.extend PPSAttack
