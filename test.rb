@@ -18,6 +18,8 @@ require 'pps_attack'
 #SMPPS.new.run(:withholding_percent => 10).show_table
 
 
+
+
 #puts "\n=== Proportional (0% hoppers) ===\n\n"
 #Prop.new.run(:hopper_percent => 0).show_table
 #
@@ -29,6 +31,9 @@ require 'pps_attack'
 #
 #puts "\n=== Proportional (200% hoppers) ===\n\n"
 #Prop.new.run(:hopper_percent => 200).show_table
+
+
+
 
 attack_opts = {:hopper_percent => 50, :withholding_percent => 50}
 
@@ -43,3 +48,7 @@ Estimator.new(smpps, :runs => 1000).run.analyze
 
 puts "\n=== xPPS ===\n\n"
 Estimator.new(xpps, :runs => 1000).run.analyze
+
+
+
+#Estimator.new(Prop.new, :runs => 1000, :hop_out_at => 43.5, :hopper_percent => 200).run.analyze

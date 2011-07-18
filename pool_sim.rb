@@ -6,7 +6,7 @@ class PoolSim
   attr_reader :round, :rounds, :difficulty, :shares, :average_fees, :reward,
               :hop_out_at, :withholding_percent, :hopper_percent
   
-  plot :round, :reward, :shares, :difficulty
+  plot :round, :reward, :shares, :difficulty, :ideal_earnings
   
   def initialize opts={}
     @rounds = 100
@@ -53,6 +53,10 @@ class PoolSim
   
   def random_reward
     50 - Math.log(rand) * average_fees
+  end
+  
+  def ideal_earnings
+    50 * round * @miner_percent / 100.0
   end
   
   def random_shares

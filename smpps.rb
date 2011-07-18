@@ -13,7 +13,7 @@ class SMPPS < PPS
     if ideal < buffer
       @buffer -= ideal
       @total_paid += ideal
-      @honest_earnings += shares * mp * pps_price / 100.0
+      @honest_earnings += mp * ideal / 100.0
     else
       @honest_earnings += mp * buffer / 100.0
       @total_paid += buffer
