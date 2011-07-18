@@ -33,6 +33,6 @@ class Estimator
   end
   
   def all_keys
-    @results[0].keys
+    subject.plot_items
   end
 end

@@ -1,7 +1,7 @@
-require 'pool_sim'
+require 'prop'
 
-class PPLNS < PoolSim
-  attr_reader :target_shares, :honest_earnings
+class PPLNS < Prop
+  attr_reader :target_shares
   
   def initialize opts={}
     super opts
@@ -11,18 +11,6 @@ class PPLNS < PoolSim
   def self.opts= opts
     super opts
     @target_shares = opts[:target_shares] if opts[:target_shares]
-  end
-  
-  def pay_out
-    @honest_earnings += reward * miner_percent / 100.0
-  end
-  
-  def clear
-    @honest_earnings = 0
-  end
-  
-  def pps_price
-    reward / target_shares
   end
   
   def hopper_duration

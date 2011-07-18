@@ -14,6 +14,7 @@ class PPS < PoolSim
   end
   
   def clear
+    super
     @buffer = 0
     @total_paid = 0
     @total_reward = 0
