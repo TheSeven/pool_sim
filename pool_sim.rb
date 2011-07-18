@@ -60,7 +60,7 @@ class PoolSim
   end
   
   def random_shares
-    (-Math.log(rand) * mean_shares).to_i
+    [(-Math.log(rand) * mean_shares).to_i, 1].max
   end
   
   def mean_shares
