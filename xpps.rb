@@ -20,4 +20,8 @@ class XPPS < PPS
       @buffer = 0
     end
   end
+  
+  def debt
+    0
+  end
 end
