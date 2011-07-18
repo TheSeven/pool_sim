@@ -100,7 +100,7 @@ class PoolSim
   end
   
   def hopper_percent
-    @miner_percent * hopper_duration / (1.0 + hopper_duration * @hopper_percent / 100.0) * (1.0 + 0.02 * share_fluctuations_percent * rand)
+    @miner_percent * @hopper_percent * hopper_duration / 100.0 / (1.0 + @miner_percent / 100.0) * (1.0 + 0.02 * share_fluctuations_percent * rand)
   end
   
   def honest_payout_percentage
