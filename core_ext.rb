@@ -6,13 +6,10 @@ end
 
 class Array
   def sum
-    sum = nil
+    return nil if empty?
+    sum = 0.0
     each do |elem|
-      if sum
-        sum += elem
-      else
-        sum = elem
-      end
+      sum += elem
     end
     sum
   end
@@ -31,5 +28,19 @@ class Array
     else
       sorted[m]
     end
+  end
+
+  def variance
+    return nil if empty?
+    sum = 0.0
+    m = mean
+    each do |elem|
+      sum += (elem - m) ** 2
+    end
+    sum / size
+  end
+
+  def std_dev
+    Math.sqrt(variance)
   end
 end

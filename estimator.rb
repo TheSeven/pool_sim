@@ -25,11 +25,11 @@ class Estimator
   
   def analyze_key key
     samples = @results.map { |hash| hash[key] }
-    [key, samples.mean, samples.median, samples.min, samples.max]
+    [key, samples.mean, samples.median, samples.min, samples.max, samples.variance]
   end
   
   def headers
-    ['', 'Average', 'Median', 'Min', 'Max']
+    ['', 'Average', 'Median', 'Min', 'Max', 'Variance']
   end
   
   def all_keys
